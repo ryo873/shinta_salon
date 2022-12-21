@@ -55,6 +55,32 @@
   text-align: center;
   margin-top: 30px;
 }
+.card {
+  background-color: #d9d9d9 !important;
+  border-radius: 20px;
+}
+.card-title {
+  font-family: "Playfair Display", serif;
+  font-weight: bold;
+  text-align: center;
+  font-size: 25px;
+}
+.card-image {
+  box-shadow: 1px 1px 10px 5px #ffffff;
+}
+.card-text {
+  font-size: 20px;
+}
+.card-text #highlight-1 {
+  font-weight: bolder;
+}
+#complete-featured {
+  font-weight: bolder;
+  font-size: 20px !important;
+}
+.btn-secondary {
+  border-radius: 10px !important;
+}
 /* media query */
 @media (max-width: 992px) {
   .nav-hr {
