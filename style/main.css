@@ -1,0 +1,91 @@
+/* header */
+.nav-brand {
+  font-family: "Playfair Display", serif;
+  font-size: 42px;
+  font-weight: bolder;
+}
+
+.nav-link {
+  font-family: "Assistant", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.nav-hr {
+  margin-top: -10px;
+  border-top: 3px solid black;
+  width: 97%;
+}
+
+#btn-enter {
+  font-family: "Assistant", sans-serif;
+  font-size: 32px;
+}
+
+/* main */
+.container-row-banner {
+  display: flex;
+}
+.main-banner-text {
+  margin-top: 70px;
+  z-index: 1 !important;
+}
+.main-banner-text p {
+  font-family: "Assistant", sans-serif;
+  font-weight: bold;
+  font-size: 38px;
+  text-align: left;
+  width: 617px;
+  margin-left: 80px;
+}
+.main-banner-text .strong-text {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: "Assistant", sans-serif;
+}
+.main-divider-1 {
+  height: 105.42px;
+  background-color: #5a5a5a;
+}
+.text-divider-1 {
+  font-size: 32px;
+  font-family: "Assistant", sans-serif;
+  color: #ffffff;
+  font-weight: bolder;
+  text-align: center;
+  margin-top: 30px;
+}
+/* media query */
+@media (max-width: 992px) {
+  .nav-hr {
+    margin-top: -5px;
+    border-top: 3px solid black;
+    width: 97%;
+    display: none;
+  }
+
+  .navbar-collapse {
+    margin-top: -20px;
+  }
+
+  .main-banner-text {
+    margin-top: 0px;
+  }
+
+  .main-banner-text p {
+    width: 100%;
+    margin-left: 0px;
+    text-align: center;
+  }
+
+  .container-row-banner :nth-child(1) {
+    order: 2;
+  }
+  .container-row-banner :nth-child(2) {
+    order: 1;
+  }
+
+  .text-divider-1 {
+    margin-top: 0px;
+  }
+}
