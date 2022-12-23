@@ -44,7 +44,7 @@
   font-family: "Assistant", sans-serif;
 }
 .main-divider {
-  height: 105.42px;
+  height: 100px;
   background-color: #5a5a5a;
 }
 .text-divider {
@@ -80,6 +80,22 @@
 }
 .btn-secondary {
   border-radius: 10px !important;
+}
+.value-description {
+  font-family: "Assistant", sans-serif;
+  font-size: 52px;
+  font-weight: bolder;
+}
+.footer-divider {
+  height: 50px;
+  background-color: #5a5a5a;
+}
+.text-divider-footer {
+  font-family: "Assistant", sans-serif;
+  font-size: 20px;
+  font-weight: lighter;
+  line-height: 50px;
+  color: #ffffff;
 }
 /* media query */
 @media (max-width: 992px) {
