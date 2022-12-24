@@ -1,0 +1,24 @@
+{
+  "name": "project-salon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-prod": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryo873/shinta_salon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryo873/shinta_salon/issues"
+  },
+  "homepage": "https://github.com/ryo873/shinta_salon#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
