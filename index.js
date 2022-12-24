@@ -67,6 +67,24 @@ app.post("/register", function (req, res) {
   });
 });
 
+app.post("/login", function (req, res) {
+  const { email, password } = req.body;
+  User.findOne({ email: email }, function (err, results) {
+    if (!results) {
+      res.send("Akun tidak ditemukan");
+    } else {
+      bcrypt.compare(password, results.password, function (err, results1) {
+        if (err) throw err;
+        if (results1) {
+          res.send("berhasil masuk");
+        } else {
+          res.send("error mongodb");
+        }
+      });
+    }
+  });
+});
+
 app.listen(port, function () {
   console.log("App listening on port 3000");
 });
