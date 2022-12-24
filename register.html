@@ -7,7 +7,7 @@
     <meta name="author" content="Ryo Nicholas Reinaldo" />
     <meta name="keywords" content="salon, perawatan tubuh, potong rambut, potong rambut murah, potong rambut terbaik, potong rambut ramah di kantong, shinta salon, sungailiat, potong rambut di sungailiat" />
     <meta name="description" content="Shinta salon adalah salah satu salon yang bisa menjadi pilihan bagi anda, dimana tidak hanya omongan belaka tapi hasil yang akan berbicara mengenai perawatan yang dihasilkan" />
-    <title>Masuk Shinta Salon</title>
+    <title>Register Shinta Salon</title>
     <!-- reset css -->
     <link rel="stylesheet" href="style/reset.css" />
     <!-- custom css -->
@@ -23,7 +23,7 @@
     <!-- aosjs -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
-  <body>
+  <body style="height: 1vh">
     <header>
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-center">
@@ -36,13 +36,21 @@
       </div>
     </header>
 
-    <main style="margin: auto">
+    <main>
       <div class="container">
         <div class="row d-flex justify-content-center">
           <div class="col-lg-6">
-            <h1 class="header">Silahkan masuk dengan akun anda</h1>
-            <p style="font-size: 14px">Belum punya akun? <a href="/register">buat akun</a></p>
-            <form>
+            <h1 class="header">Buat akun dulu ya, dengan email</h1>
+            <p style="font-size: 14px">Sudah punya akun? <a href="/login">masuk</a></p>
+            <form action="/register" method="post">
+              <div class="form-group">
+                <label for="fName">Nama Depan</label>
+                <input type="text" class="form-control" id="fName" name="fName" required />
+              </div>
+              <div class="form-group">
+                <label for="lName">Nama Belakang</label>
+                <input type="text" class="form-control" id="lName" name="lName" required />
+              </div>
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required />
@@ -51,8 +59,11 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required />
               </div>
-              <button type="submit" class="btn btn-secondary" style="width: 100%; font-size: 1.2rem">Masuk</button>
-              <a href="/forgot"><p class="text-center" style="color: #363636; font-size: 1rem">Saya lupa password</p></a>
+              <!-- <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="privacy" name="privacy" />
+                <label class="form-check-label" for="exampleCheck1">Setuju dengan <a href="#">ketentuan</a> dan <a href="#">kebijakan privasi</a> kami </label>
+              </div> -->
+              <button type="submit" class="btn btn-secondary" style="width: 100%">Buat Akun</button>
             </form>
           </div>
         </div>

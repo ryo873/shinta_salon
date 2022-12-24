@@ -1,4 +1,7 @@
 /* header */
+/* .brand-nav {
+  display: block;
+} */
 .nav-brand {
   font-family: "Playfair Display", serif;
   font-size: 42px;
@@ -99,6 +102,9 @@
 }
 /* media query */
 @media (max-width: 992px) {
+  /* .brand-nav {
+    display: none !important;
+  } */
   .nav-hr {
     margin-top: -5px;
     border-top: 3px solid black;
