@@ -33,9 +33,21 @@ const userSchema = new mongoose.Schema({
   lName: String,
   email: String,
   password: String,
+  verified: Boolean,
 });
 // user model
 const User = mongoose.model("User", userSchema);
+// create email transport
+const nodemailer = require("nodemailer");
+
+var transporter = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "940952ac4580d7",
+    pass: "07ea7987d2fe32",
+  },
+});
 
 // route
 app.get("/", function (req, res) {
@@ -51,20 +63,34 @@ app.get("/login", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-  const { fName, lName, email, password } = req.body;
-  User.findOne({ email: email }, function (err, results) {
-    if (err) throw err;
-    if (!results) {
-      //   const hash = bcrypt.hashSync(password, saltRounds);
-      //   console.log(hash);
-      const myPlaintextPassword = password;
-      const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
-      User.create({ fName: fName, lName: lName, email: email, password: hash, idUser: userId });
-      res.send("Ok Berhasil");
-    } else {
-      res.send("email sudah terdaftar");
-    }
-  });
+  const { fName, lName, email, password, privacy } = req.body;
+  console.log(typeof privacy);
+  if (privacy !== "on") {
+    res.redirect("/register");
+  } else {
+    User.findOne({ email: email }, function (err, results) {
+      if (err) throw err;
+      if (!results) {
+        const myPlaintextPassword = password;
+        const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
+        User.create({ fName: fName, lName: lName, email: email, password: hash, idUser: userId, verified: false });
+        let mailOption = {
+          from: "<ryoreinaldon11@gmail.com>",
+          to: `${email}`,
+          subject: "email verification",
+          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}">Verified email</a></p>`,
+        };
+        transporter.sendMail(mailOption, (error, info) => {
+          if (error) {
+            return console.log(error);
+          }
+          res.send("Email verifikasi terkirim");
+        });
+      } else {
+        res.send("email sudah terdaftar");
+      }
+    });
+  }
 });
 
 app.post("/login", function (req, res) {
@@ -81,6 +107,17 @@ app.post("/login", function (req, res) {
           res.send("error mongodb");
         }
       });
+    }
+  });
+});
+
+app.get("/verified", function (req, res) {
+  let id = req.query.id;
+  User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("verifikasi berhasil");
     }
   });
 });
