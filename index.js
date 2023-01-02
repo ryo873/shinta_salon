@@ -48,6 +48,8 @@ var transporter = nodemailer.createTransport({
     pass: "07ea7987d2fe32",
   },
 });
+// initialize ejs
+app.set("view engine", "ejs");
 
 // route
 app.get("/", function (req, res) {
@@ -66,7 +68,7 @@ app.post("/register", function (req, res) {
   const { fName, lName, email, password, privacy } = req.body;
   console.log(typeof privacy);
   if (privacy !== "on") {
-    res.redirect("/register");
+    res.render("not-agree-privacy");
   } else {
     User.findOne({ email: email }, function (err, results) {
       if (err) throw err;
@@ -102,7 +104,7 @@ app.post("/login", function (req, res) {
       bcrypt.compare(password, results.password, function (err, results1) {
         if (err) throw err;
         if (results1) {
-          res.send("berhasil masuk");
+          res.render("success-login");
         } else {
           res.send("error mongodb");
         }
@@ -115,9 +117,9 @@ app.get("/verified", function (req, res) {
   let id = req.query.id;
   User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
     if (err) {
-      console.log(err);
+      res.render("failed-verified");
     } else {
-      res.send("verifikasi berhasil");
+      res.render("success-verified");
     }
   });
 });

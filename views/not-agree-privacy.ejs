@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Ryo Nicholas Reinaldo" />
+    <meta name="keywords" content="salon, perawatan tubuh, potong rambut, potong rambut murah, potong rambut terbaik, potong rambut ramah di kantong, shinta salon, sungailiat, potong rambut di sungailiat" />
+    <meta name="description" content="Shinta salon adalah salah satu salon yang bisa menjadi pilihan bagi anda, dimana tidak hanya omongan belaka tapi hasil yang akan berbicara mengenai perawatan yang dihasilkan" />
+    <title>Register Shinta Salon</title>
+    <!-- reset css -->
+    <link rel="stylesheet" href="style/reset.css" />
+    <!-- custom css -->
+    <link rel="stylesheet" href="style/main.css" />
+    <!-- google font -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Assistant&family=Playfair+Display&display=swap");
+    </style>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
+    <!-- font-awesome -->
+    <script src="https://kit.fontawesome.com/4bf12d8317.js" crossorigin="anonymous"></script>
+    <!-- aosjs -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body style="height: 1vh">
+    <header>
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-center">
+          <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#"> <p class="nav-brand">Shinta Salon</p></a>
+          </a>
+          <p>Siap untuk mengubah <br />penampilan-mu</p>
+        </nav>
+        <hr class="nav-hr" />
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="row d-flex justify-content-center">
+          <div class="col-lg-6">
+            <h1 class="header">Buat akun dulu ya, dengan email</h1>
+            <p style="font-size: 14px">Sudah punya akun? <a href="/login">masuk</a></p>
+            <form action="/register" method="post">
+              <div class="form-group">
+                <label for="fName">Nama Depan</label>
+                <input type="text" class="form-control" id="fName" name="fName" required />
+              </div>
+              <div class="form-group">
+                <label for="lName">Nama Belakang</label>
+                <input type="text" class="form-control" id="lName" name="lName" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required />
+              </div>
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="privacy" name="privacy" />
+                <label class="form-check-label" for="privacy" value="true">Setuju dengan <a href="#">ketentuan</a> dan <a href="#">kebijakan privasi</a> kami </label><br />
+                <small style="color: red">Anda belum menyetujui ketentuan dan kebijakan privasi kami</small>
+              </div>
+              <button type="submit" class="btn btn-secondary" style="width: 100%">Buat Akun</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container mt-5">
+        <div class="row">
+          <div class="col-lg-12 footer-divider d-flex justify-content-center">
+            <p class="text-divider-footer">&copy; 2023 by Ryo Nicholas Reinaldo</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <!-- aosjs -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- aos initialize -->
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>
