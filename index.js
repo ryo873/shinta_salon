@@ -1,3 +1,5 @@
+// configure cookie-parser
+const cookie = require("cookie-parser");
 // configure express
 const express = require("express");
 const app = express();
