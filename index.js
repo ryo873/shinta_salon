@@ -1,5 +1,7 @@
 // configure cookie-parser
 const cookie = require("cookie-parser");
+// configure express-session
+const session = require("express-session");
 // configure express
 const express = require("express");
 const app = express();
@@ -12,6 +14,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 // static file
 app.use(express.static("public"));
+// session
+app.use(
+  session({
+    secret: "rahasia",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 // hash password
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -106,6 +116,7 @@ app.post("/login", function (req, res) {
       bcrypt.compare(password, results.password, function (err, results1) {
         if (err) throw err;
         if (results1) {
+          req.session.login = true;
           res.render("success-login");
         } else {
           res.send("error mongodb");
@@ -122,6 +133,24 @@ app.get("/verified", function (req, res) {
       res.render("failed-verified");
     } else {
       res.render("success-verified");
+    }
+  });
+});
+
+app.get("/completed", function (req, res) {
+  if (req.session.login) {
+    res.render("completed-feature");
+  } else {
+    res.send("Anda harus login terlebih dahulu");
+  }
+});
+
+app.get("/logout", function (req, res) {
+  req.session.destroy(function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect("/");
     }
   });
 });
