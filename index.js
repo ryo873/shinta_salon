@@ -1,5 +1,5 @@
 // configure cookie-parser
-const cookie = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 // configure express-session
 const session = require("express-session");
 // configure express
@@ -22,11 +22,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+// cookie
+app.use(cookieParser());
 // hash password
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const myPlaintextPassword = "Floren&2022";
-const someOtherPlaintextPassword = "not_bacon";
 // console.log(hash);
 // use mongoose
 const mongoose = require("mongoose");
@@ -65,7 +65,11 @@ app.set("view engine", "ejs");
 
 // route
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
+  if (req.cookies.login === "true") {
+    res.render("success-login");
+  } else {
+    res.sendFile(__dirname + "/index.html");
+  }
 });
 
 app.get("/register", function (req, res) {
@@ -85,14 +89,16 @@ app.post("/register", function (req, res) {
     User.findOne({ email: email }, function (err, results) {
       if (err) throw err;
       if (!results) {
-        const myPlaintextPassword = password;
-        const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
+        const userPassword = password;
+        const hash = bcrypt.hashSync(userPassword, saltRounds);
+        const date = new Date();
+        const getMinute = date.getMinutes();
         User.create({ fName: fName, lName: lName, email: email, password: hash, idUser: userId, verified: false });
         let mailOption = {
           from: "<ryoreinaldon11@gmail.com>",
           to: `${email}`,
           subject: "email verification",
-          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}">Verified email</a></p>`,
+          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 10 minutes</p>`,
         };
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
@@ -116,7 +122,14 @@ app.post("/login", function (req, res) {
       bcrypt.compare(password, results.password, function (err, results1) {
         if (err) throw err;
         if (results1) {
-          req.session.login = true;
+          // res.cookie("login", "benar");
+          // const hashSecretSession = "true";
+          // const hashSession = bcrypt.hashSync(hashSecretSession, saltRounds);
+          res.cookie("login", "true", {
+            secure: true,
+            httpOnly: true,
+            sameSite: "strict",
+          });
           res.render("success-login");
         } else {
           res.send("error mongodb");
@@ -128,16 +141,41 @@ app.post("/login", function (req, res) {
 
 app.get("/verified", function (req, res) {
   let id = req.query.id;
-  User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
-    if (err) {
-      res.render("failed-verified");
-    } else {
-      res.render("success-verified");
-    }
-  });
+  let time = req.query.timeMinute;
+  let d1 = new Date(),
+    d2 = new Date();
+  d2.setMinutes(d1.getMinutes() + 10);
+  if (time > time + 10) {
+    res.send("Link has been expired");
+  } else {
+    User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
+      if (err) {
+        res.render("failed-verified");
+      } else {
+        res.render("success-verified");
+      }
+    });
+  }
 });
 
 app.get("/completed", function (req, res) {
+  // if (res.cookie.login) {
+  //   res.session.login = true;
+  // }
+  // const hashSecretSession = "true";
+  // bcrypt.compare(req.session.login, hashSecretSession, function (err, results2) {
+  //   if (err) throw err;
+  //   if (results2) {
+  //     res.render("completed-feature");
+  //   } else {
+  //     res.send("Anda harus login terlebih dahulu");
+  //   }
+  // });
+  if (req.cookies.login === "true") {
+    req.session.login = true;
+  } else {
+    req.session.login = false;
+  }
   if (req.session.login) {
     res.render("completed-feature");
   } else {
@@ -146,13 +184,8 @@ app.get("/completed", function (req, res) {
 });
 
 app.get("/logout", function (req, res) {
-  req.session.destroy(function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.redirect("/");
-    }
-  });
+  res.clearCookie("login");
+  res.redirect("/");
 });
 
 app.listen(port, function () {
