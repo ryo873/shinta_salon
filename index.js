@@ -51,6 +51,8 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 // create email transport
 const nodemailer = require("nodemailer");
+// configure jwt
+const jwt = require("jsonwebtoken");
 
 var transporter = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
@@ -94,11 +96,26 @@ app.post("/register", function (req, res) {
         const date = new Date();
         const getMinute = date.getMinutes();
         User.create({ fName: fName, lName: lName, email: email, password: hash, idUser: userId, verified: false });
+        // let mailOption = {
+        //   from: "<ryoreinaldon11@gmail.com>",
+        //   to: `${email}`,
+        //   subject: "email verification",
+        //   html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 10 minutes</p>`,
+        // };
+        // transporter.sendMail(mailOption, (error, info) => {
+        //   if (error) {
+        //     return console.log(error);
+        //   }
+        //   res.send("Email verifikasi terkirim");
+        // });
+        const token = jwt.sign({ userId: userId }, "SHINTA_SALON_11", {
+          expiresIn: "1h",
+        });
         let mailOption = {
           from: "<ryoreinaldon11@gmail.com>",
           to: `${email}`,
           subject: "email verification",
-          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 10 minutes</p>`,
+          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified?token=${token}">Verified email</a> the link will expired in 1 hour</p>`,
         };
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
@@ -140,22 +157,41 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/verified", function (req, res) {
-  let id = req.query.id;
-  let time = req.query.timeMinute;
-  let d1 = new Date(),
-    d2 = new Date();
-  d2.setMinutes(d1.getMinutes() + 10);
-  if (time > time + 10) {
-    res.send("Link has been expired");
-  } else {
-    User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
-      if (err) {
-        res.render("failed-verified");
+  // let id = req.query.id;
+  // let time = req.query.timeMinute;
+  // let d1 = new Date(),
+  //   d2 = new Date();
+  // d2.setMinutes(d1.getMinutes() + 10);
+  // if (time > time + 10) {
+  //   res.send("Link has been expired");
+  // } else {
+  // User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
+  //   if (err) {
+  //     res.render("failed-verified");
+  //   } else {
+  //     res.render("success-verified");
+  //   }
+  // });
+  // }
+  let token = req.query.token;
+
+  jwt.verify(token, "SHINTA_SALON_11", (err, decode) => {
+    if (err) {
+      if (err.name === "TokenExpiredError") {
+        res.send({ message: "Token sudah expired" });
       } else {
-        res.render("success-verified");
+        res.send({ message: "Token tidak valid" });
       }
-    });
-  }
+    } else {
+      User.findOneAndUpdate({ idUser: decode.userId }, { verified: true }, function (err, results) {
+        if (err) {
+          res.render("Failed-verified");
+        } else {
+          res.render("success-verified");
+        }
+      });
+    }
+  });
 });
 
 app.get("/completed", function (req, res) {
@@ -179,7 +215,7 @@ app.get("/completed", function (req, res) {
   if (req.session.login) {
     res.render("completed-feature");
   } else {
-    res.send("Anda harus login terlebih dahulu");
+    res.redirect("/login");
   }
 });
 
