@@ -123,7 +123,7 @@ app.post("/register", function (req, res) {
           if (error) {
             return console.log(error);
           }
-          res.send("Email verifikasi terkirim");
+          res.render("send-email-verification");
         });
       } else {
         res.send("email sudah terdaftar");
