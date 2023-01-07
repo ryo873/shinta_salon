@@ -1,3 +1,5 @@
+// require dotenv
+require("dotenv").config();
 // configure cookie-parser
 const cookieParser = require("cookie-parser");
 // configure express-session
@@ -100,7 +102,7 @@ app.post("/register", function (req, res) {
         //   from: "<ryoreinaldon11@gmail.com>",
         //   to: `${email}`,
         //   subject: "email verification",
-        //   html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 10 minutes</p>`,
+        //   html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 15 minutes</p>`,
         // };
         // transporter.sendMail(mailOption, (error, info) => {
         //   if (error) {
@@ -108,14 +110,14 @@ app.post("/register", function (req, res) {
         //   }
         //   res.send("Email verifikasi terkirim");
         // });
-        const token = jwt.sign({ userId: userId }, "SHINTA_SALON_11", {
-          expiresIn: "1h",
+        const token = jwt.sign({ userId: userId }, process.env.SECRET_KEY, {
+          expiresIn: "15m",
         });
         let mailOption = {
           from: "<ryoreinaldon11@gmail.com>",
           to: `${email}`,
           subject: "email verification",
-          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified?token=${token}">Verified email</a> the link will expired in 1 hour</p>`,
+          html: `<p>Please click this link to verified <a href="http://localhost:3000/verified?token=${token}">Verified email</a> the link will expired in 15 minutes</p>`,
         };
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
@@ -175,7 +177,7 @@ app.get("/verified", function (req, res) {
   // }
   let token = req.query.token;
 
-  jwt.verify(token, "SHINTA_SALON_11", (err, decode) => {
+  jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
     if (err) {
       if (err.name === "TokenExpiredError") {
         res.send({ message: "Token sudah expired" });
