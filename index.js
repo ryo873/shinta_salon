@@ -1,3 +1,5 @@
+// require crypto
+const crypto = require("crypto");
 // require dotenv
 require("dotenv").config();
 // configure cookie-parser
@@ -86,7 +88,7 @@ app.get("/login", function (req, res) {
 
 app.post("/register", function (req, res) {
   const { fName, lName, email, password, privacy } = req.body;
-  console.log(typeof privacy);
+  // console.log(typeof privacy);
   if (privacy !== "on") {
     res.render("not-agree-privacy");
   } else {
@@ -94,22 +96,9 @@ app.post("/register", function (req, res) {
       if (err) throw err;
       if (!results) {
         const userPassword = password;
-        const hash = bcrypt.hashSync(userPassword, saltRounds);
+        const hashPassword = bcrypt.hashSync(userPassword, saltRounds);
         const date = new Date();
-        const getMinute = date.getMinutes();
-        User.create({ fName: fName, lName: lName, email: email, password: hash, idUser: userId, verified: false });
-        // let mailOption = {
-        //   from: "<ryoreinaldon11@gmail.com>",
-        //   to: `${email}`,
-        //   subject: "email verification",
-        //   html: `<p>Please click this link to verified <a href="http://localhost:3000/verified/?id=${userId}&timeMinute=${getMinute}">Verified email</a> the link will expired in 15 minutes</p>`,
-        // };
-        // transporter.sendMail(mailOption, (error, info) => {
-        //   if (error) {
-        //     return console.log(error);
-        //   }
-        //   res.send("Email verifikasi terkirim");
-        // });
+        User.create({ fName: fName, lName: lName, email: email, password: hashPassword, idUser: userId, verified: false });
         const token = jwt.sign({ userId: userId }, process.env.SECRET_KEY, {
           expiresIn: "15m",
         });
@@ -138,13 +127,17 @@ app.post("/login", function (req, res) {
     if (!results) {
       res.send("Akun tidak ditemukan");
     } else {
+      res.cookie("email", results.email, {
+        secure: true,
+        httpOnly: true,
+        sameSite: "strict",
+      });
       bcrypt.compare(password, results.password, function (err, results1) {
         if (err) throw err;
         if (results1) {
-          // res.cookie("login", "benar");
-          // const hashSecretSession = "true";
-          // const hashSession = bcrypt.hashSync(hashSecretSession, saltRounds);
-          res.cookie("login", "true", {
+          const cookieValue = "true";
+          const hash = crypto.createHash("sha256").update(cookieValue).digest("hex");
+          res.cookie("login", hash, {
             secure: true,
             httpOnly: true,
             sameSite: "strict",
@@ -152,6 +145,7 @@ app.post("/login", function (req, res) {
           res.render("success-login");
         } else {
           res.send("error mongodb");
+          res.clearCookie("email");
         }
       });
     }
@@ -159,22 +153,6 @@ app.post("/login", function (req, res) {
 });
 
 app.get("/verified", function (req, res) {
-  // let id = req.query.id;
-  // let time = req.query.timeMinute;
-  // let d1 = new Date(),
-  //   d2 = new Date();
-  // d2.setMinutes(d1.getMinutes() + 10);
-  // if (time > time + 10) {
-  //   res.send("Link has been expired");
-  // } else {
-  // User.findOneAndUpdate({ idUser: id }, { verified: true }, function (err, results) {
-  //   if (err) {
-  //     res.render("failed-verified");
-  //   } else {
-  //     res.render("success-verified");
-  //   }
-  // });
-  // }
   let token = req.query.token;
 
   jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
@@ -197,19 +175,9 @@ app.get("/verified", function (req, res) {
 });
 
 app.get("/completed", function (req, res) {
-  // if (res.cookie.login) {
-  //   res.session.login = true;
-  // }
-  // const hashSecretSession = "true";
-  // bcrypt.compare(req.session.login, hashSecretSession, function (err, results2) {
-  //   if (err) throw err;
-  //   if (results2) {
-  //     res.render("completed-feature");
-  //   } else {
-  //     res.send("Anda harus login terlebih dahulu");
-  //   }
-  // });
-  if (req.cookies.login === "true") {
+  const newCookieValue = "true";
+  const newHash = crypto.createHash("sha256").update(newCookieValue).digest("hex");
+  if (newHash === req.cookies.login) {
     req.session.login = true;
   } else {
     req.session.login = false;
@@ -219,10 +187,29 @@ app.get("/completed", function (req, res) {
   } else {
     res.redirect("/login");
   }
+  // if (req.cookies.login === "true") {
+  //
+  // } else {
+  //
+  // }
+  // if (req.session.login) {
+  //   res.render("completed-feature");
+  // } else {
+  //   res.redirect("/login");
+  // }
+});
+
+app.get("/forgot", function (req, res) {
+  res.render("forget-password");
+});
+
+app.post("/forgot", function (req, res) {
+  res.send("Email ubah password sedang dikirim");
 });
 
 app.get("/logout", function (req, res) {
   res.clearCookie("login");
+  res.clearCookie("email", { path: "/" });
   res.redirect("/");
 });
 
