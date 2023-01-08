@@ -127,17 +127,15 @@ app.post("/login", function (req, res) {
     if (!results) {
       res.send("Akun tidak ditemukan");
     } else {
-      res.cookie("email", results.email, {
-        secure: true,
-        httpOnly: true,
-        sameSite: "strict",
-      });
+      req.session.email = results.email;
       bcrypt.compare(password, results.password, function (err, results1) {
         if (err) throw err;
         if (results1) {
+          const oneWeekInMiliseconds = 7 * 24 * 60 * 60 * 1000;
           const cookieValue = "true";
           const hash = crypto.createHash("sha256").update(cookieValue).digest("hex");
           res.cookie("login", hash, {
+            expired: new Date(Date.now() + oneWeekInMiliseconds),
             secure: true,
             httpOnly: true,
             sameSite: "strict",
@@ -181,6 +179,7 @@ app.get("/completed", function (req, res) {
     req.session.login = true;
   } else {
     req.session.login = false;
+    req.session.email = false;
   }
   if (req.session.login) {
     res.render("completed-feature");
