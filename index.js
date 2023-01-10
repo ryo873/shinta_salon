@@ -192,7 +192,33 @@ app.get("/forgot", function (req, res) {
 });
 
 app.post("/forgot", function (req, res) {
-  res.send("Email ubah password sedang dikirim");
+  let emailAccount = req.body.email;
+  User.findOne({ email: emailAccount }, function (err, resultForgot) {
+    if (err) throw err;
+    if (resultForgot) {
+      res.render("change-password", { emailAccountChange: emailAccount });
+    } else {
+      res.send("Email tidak ada");
+    }
+  });
+});
+
+app.post("/change-password/:email", function (req, res) {
+  let emailUser = req.params.email;
+  let { password, passwordConfirm } = req.body;
+  if (password != passwordConfirm) {
+    res.send("Password konfirmasi salah");
+  } else {
+    const userPassword = password;
+    const hashPassword = bcrypt.hashSync(userPassword, saltRounds);
+    User.findOneAndUpdate({ email: emailUser }, { password: hashPassword }, function (err, results) {
+      if (err) {
+        res.send("Gagal ubah password");
+      } else {
+        res.send("Ubah password berhasil");
+      }
+    });
+  }
 });
 
 app.get("/logout", function (req, res) {
