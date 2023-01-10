@@ -71,7 +71,7 @@ app.set("view engine", "ejs");
 
 // route
 app.get("/", function (req, res) {
-  if (req.cookies.login === "true") {
+  if (req.cookies.login) {
     res.render("success-login");
   } else {
     res.sendFile(__dirname + "/index.html");
@@ -142,8 +142,7 @@ app.post("/login", function (req, res) {
           });
           res.render("success-login");
         } else {
-          res.send("error mongodb");
-          res.clearCookie("email");
+          res.render("wrong-password", { wrong: "true" });
         }
       });
     }
@@ -186,16 +185,6 @@ app.get("/completed", function (req, res) {
   } else {
     res.redirect("/login");
   }
-  // if (req.cookies.login === "true") {
-  //
-  // } else {
-  //
-  // }
-  // if (req.session.login) {
-  //   res.render("completed-feature");
-  // } else {
-  //   res.redirect("/login");
-  // }
 });
 
 app.get("/forgot", function (req, res) {
