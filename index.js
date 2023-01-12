@@ -197,20 +197,14 @@ app.post("/forgot", function (req, res) {
     if (err) throw err;
     if (resultForgot) {
       const token = jwt.sign({ email: emailAccount }, process.env.SECRET_KEY, {
-        expiresIn: "15m",
+        expiresIn: "5m",
       });
       let mailOption = {
         from: "<ryoreinaldon11@gmail.com>",
         to: `${emailAccount}`,
         subject: "change password",
-        html: `<p>Please click this link to change the password <a href="http://localhost:3000/change-password?token=${token}">Change password</a> the link will expired in 15 minutes</p>`,
+        html: `<p>Please click this link to change the password <a href="http://localhost:3000/change-password?token=${token}">Change password</a> the link will expired in 5 minutes</p>`,
       };
-      // transporter.sendMail(mailOption, (error, info) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      //   res.render("send-email-verification");
-      // });
       transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           console.log(error);
