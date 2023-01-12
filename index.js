@@ -110,7 +110,7 @@ app.post("/register", function (req, res) {
         };
         transporter.sendMail(mailOption, (error, info) => {
           if (error) {
-            return console.log(error);
+            console.log(error);
           }
           res.render("send-email-verification");
         });
@@ -196,27 +196,76 @@ app.post("/forgot", function (req, res) {
   User.findOne({ email: emailAccount }, function (err, resultForgot) {
     if (err) throw err;
     if (resultForgot) {
-      res.render("change-password", { emailAccountChange: emailAccount });
+      const token = jwt.sign({ email: emailAccount }, process.env.SECRET_KEY, {
+        expiresIn: "15m",
+      });
+      let mailOption = {
+        from: "<ryoreinaldon11@gmail.com>",
+        to: `${emailAccount}`,
+        subject: "change password",
+        html: `<p>Please click this link to change the password <a href="http://localhost:3000/change-password?token=${token}">Change password</a> the link will expired in 15 minutes</p>`,
+      };
+      // transporter.sendMail(mailOption, (error, info) => {
+      //   if (error) {
+      //     console.log(error);
+      //   }
+      //   res.render("send-email-verification");
+      // });
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          console.log(error);
+        }
+        res.render("send-change-password");
+      });
     } else {
       res.send("Email tidak ada");
     }
   });
 });
 
-app.post("/change-password/:email", function (req, res) {
-  let emailUser = req.params.email;
+app.get("/change-password", function (req, res) {
+  let token = req.query.token;
+
+  jwt.verify(token, process.env.SECRET_KEY, function (err, decode) {
+    if (err) {
+      if (err.name === "TokenExpiredError") {
+        res.send({ message: "Token sudah expired" });
+      } else {
+        res.send({ message: "Token tidak valid" });
+      }
+    } else {
+      User.findOne({ email: decode.email }, function (err, results) {
+        if (err) throw err;
+        if (results) {
+          let tokenEmail = jwt.sign({ email: decode.email }, process.env.SECRET_KEY, {
+            expiresIn: "15m",
+          });
+          res.render("change-password", { token: tokenEmail });
+        } else {
+          res.send("error");
+        }
+      });
+    }
+  });
+});
+
+app.post("/change-password-final/:email", function (req, res) {
+  let tokenEmail = req.params.email;
   let { password, passwordConfirm } = req.body;
   if (password != passwordConfirm) {
     res.send("Password konfirmasi salah");
   } else {
-    const userPassword = password;
-    const hashPassword = bcrypt.hashSync(userPassword, saltRounds);
-    User.findOneAndUpdate({ email: emailUser }, { password: hashPassword }, function (err, results) {
-      if (err) {
-        res.send("Gagal ubah password");
-      } else {
-        res.send("Ubah password berhasil");
-      }
+    jwt.verify(tokenEmail, process.env.SECRET_KEY, function (err, decode) {
+      if (err) throw err;
+      const userPassword = password;
+      const hashPassword = bcrypt.hashSync(userPassword, saltRounds);
+      User.findOneAndUpdate({ email: decode.email }, { password: hashPassword }, function (err, results) {
+        if (err) {
+          res.send("Gagal ubah password");
+        } else {
+          res.send("Ubah password berhasil");
+        }
+      });
     });
   }
 });
