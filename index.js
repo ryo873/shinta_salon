@@ -31,7 +31,6 @@ app.use(cookieParser());
 // hash password
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-// console.log(hash);
 // use mongoose
 const mongoose = require("mongoose");
 
@@ -58,6 +57,7 @@ const nodemailer = require("nodemailer");
 // configure jwt
 const jwt = require("jsonwebtoken");
 
+// nodemailer transporter
 var transporter = nodemailer.createTransport({
   host: "smtp.mailtrap.io",
   port: 2525,
@@ -262,6 +262,10 @@ app.post("/change-password-final/:email", function (req, res) {
       });
     });
   }
+});
+
+app.get("/testimonials", function (req, res) {
+  res.render("testimonials");
 });
 
 app.get("/logout", function (req, res) {
