@@ -103,6 +103,13 @@ html {
   line-height: 50px;
   color: #ffffff;
 }
+
+/* testimonials */
+.testimonials-container {
+  max-height: 500px;
+  overflow: auto;
+}
+
 /* media query */
 @media (max-width: 992px) {
   /* .brand-nav {
@@ -139,5 +146,9 @@ html {
   .text-divider {
     margin-top: 30px;
     font-size: 20px;
+  }
+  .text-testimonial {
+    font-size: 0.8rem !important;
+    font-weight: 600;
   }
 }
